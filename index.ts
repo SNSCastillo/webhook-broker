@@ -39,7 +39,8 @@ app.post("/github-webhook", async (req: Request, res: Response) => {
 
 const DISCORD_CHANNEL_ID = process.env.MONEY_WEBHOOKS_DISCORD;
 const URL_BASE = process.env.URL_BASE;
-setInterval(async () => {
+
+async function notificarCotizacionUSD() {
   try {
     const response = await fetch(`${URL_BASE}/cotizaciones/usd`);
     const data = await response.json();
@@ -50,12 +51,13 @@ setInterval(async () => {
       return;
     }
 
-    const message = `
+    const message = `=====================================
       💰 Precio actual del Dólar: $${price}
       Precio de compra: $${data.compra}
       Precio de venta: $${data.venta}
       Precio fix: $${data.fix}
       Fecha de actualización: ${data.fechaActualizacion}
+      =====================================
     `;
 
     await fetch(DISCORD_CHANNEL_ID, {
@@ -70,7 +72,26 @@ setInterval(async () => {
   } catch (err) {
     console.error(err);
   }
-}, 2 * 60 * 1000);
+}
+
+function msHasta6AM(): number {
+  const ahora = new Date();
+  const proxima = new Date(
+    ahora.getFullYear(),
+    ahora.getMonth(),
+    ahora.getDate(),
+    6, 0, 0, 0
+  );
+  if (proxima <= ahora) {
+    proxima.setDate(proxima.getDate() + 1);
+  }
+  return proxima.getTime() - ahora.getTime();
+}
+
+setTimeout(() => {
+  notificarCotizacionUSD();
+  setInterval(notificarCotizacionUSD, 24 * 60 * 60 * 1000);
+}, msHasta6AM());
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
