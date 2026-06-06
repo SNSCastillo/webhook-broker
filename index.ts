@@ -14,6 +14,7 @@ app.post("/github-webhook", async (req: Request, res: Response) => {
       console.error("WEBHOOK_DISCORD no está definido");
       return res.sendStatus(500);
     }
+    console.log("Webhook recibido:", data);
 
     const repo = data.repository?.name;
     const user = data.pusher?.name;
