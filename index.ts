@@ -23,11 +23,11 @@ app.post("/github-webhook", async (req: Request, res: Response) => {
       return res.sendStatus(200);
     }
 
-    const repo = data.repository?.name;
-    const user = data.pusher?.name;
-    const branch = data.ref.replace("refs/heads/", "");
+    const repo = data?.repository?.name;
+    const user = data?.pusher?.name;
+    const branch = data?.ref?.replace("refs/heads/", "");
 
-    const commits = data.commits
+    const commits = data?.commits
       .filter((c: any) => c.distinct)
       .map((c: any) => `• ${c.message.split("\n")[0]}`)
       .join("\n");
