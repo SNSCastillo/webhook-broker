@@ -77,7 +77,7 @@ app.post("/github-webhook", async (req: Request, res: Response) => {
                 value: commits || "Sin cambios",
               },
               {
-                name: "📝 Resumen con IA",
+                name: "🤖 Resumen con IA",
                 value: sumary || "Sin resumen",
               },
             ],
