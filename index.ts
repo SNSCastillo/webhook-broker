@@ -4,6 +4,7 @@ import express, { type Request, type Response } from "express";
 const app = express();
 const PORT = Number(process.env.PORT ?? 3000);
 const DISCORD_WEBHOOK = process.env.WEBHOOK_DISCORD;
+const URL_IA_API = process.env.URL_IA_API;
 
 app.use(express.json());
 
@@ -30,6 +31,20 @@ app.post("/github-webhook", async (req: Request, res: Response) => {
       .filter((c: any) => c.distinct)
       .map((c: any) => `• ${c.message.split("\n")[0]}`)
       .join("\n");
+
+    const response = await fetch(`${URL_IA_API}/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messages: [
+          { role: "user", content: `Genera un resumen breve de los siguientes commits:\n${commits}` },
+        ],
+      }),
+    });
+
+    const sumary = await response.text();
 
     await fetch(DISCORD_WEBHOOK, {
       method: "POST",
@@ -60,6 +75,10 @@ app.post("/github-webhook", async (req: Request, res: Response) => {
               {
                 name: "📝 Commits",
                 value: commits || "Sin cambios",
+              },
+              {
+                name: "📝 Resumen con IA",
+                value: sumary || "Sin resumen",
               },
             ],
             timestamp: new Date().toISOString(),
