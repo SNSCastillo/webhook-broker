@@ -1,0 +1,12 @@
+pre-commit:
+  commands:
+    check:
+      glob: "*.{js,ts,json,jsonc,css}"
+      run: npx @biomejs/biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
+      stage_fixed: true
+colors:
+  cyan: 14
+  gray: 244
+  green: '#32CD32'
+  red: '#FF1493'
+  yellow: '#F0E68C'
