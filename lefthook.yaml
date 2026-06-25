@@ -1,0 +1,14 @@
+pre-commit:
+  commands:
+    check:
+      run: npx @biomejs/biome check --write {staged_files}
+      stage_fixed: true
+    test:
+      run: pnpm test
+
+colors:
+  cyan: 14
+  gray: 244
+  green: '#32CD32'
+  red: '#FF1493'
+  yellow: '#F0E68C'
