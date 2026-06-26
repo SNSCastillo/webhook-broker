@@ -1,5 +1,4 @@
 import type { Commit } from "../../common/types/github.types";
-import type { IAResponse } from "../../common/types/ia.interface";
 import type { HttpClient } from "../../config/contract/http-client";
 import { env } from "../../config/env";
 
@@ -22,19 +21,18 @@ export class MessageDiscord {
 			.map((c: Commit) => `• ${c.message.split("\n")[0]}`)
 			.join("\n");
 
-		const response = await this.httpClient.post<IAResponse>(
-			`${this.URL_IA_API}/chat`,
-			{
-				messages: [
-					{
-						role: "user",
-						content: `Genera un resumen breve de los siguientes commits:\n${commits}`,
-					},
-				],
-			},
-		);
+		/* const response = await this.httpClient.post(`${this.URL_IA_API}/chat`, {
+			messages: [
+				{
+					role: "user",
+					content: `Genera un resumen breve de los siguientes commits:\n${commits}`,
+				},
+			],
+		});
 
-		const summary = response;
+		const summary = response || "Sin resumen";
+		console.debug("IA Response", summary, response);
+		console.debug("Commits", commits); */
 
 		await this.httpClient.post(this.URL_DISCORD, {
 			embeds: [
@@ -61,10 +59,10 @@ export class MessageDiscord {
 							name: "📝 Commits",
 							value: commits || "Sin cambios",
 						},
-						{
+						/* 	{
 							name: "🤖 Resumen con IA",
-							value: summary || "Sin resumen",
-						},
+							value: summary,
+						}, */
 					],
 					timestamp: new Date().toISOString(),
 				},

@@ -10,6 +10,6 @@ export class FetchHttpClient implements HttpClient {
 			body: JSON.stringify(body),
 		});
 
-		return response.json() as Promise<T>;
+		return response as T;
 	}
 }
